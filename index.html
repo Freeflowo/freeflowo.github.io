@@ -3,62 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS2 Premier Rank Distribution</title>
+    <title>CS Rank Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-    <h2>Enter CS2 Premier Rank Distribution Percentage</h2>
-    <label for="distrib">Enter Percentage:</label>
-    <input type="number" id="distrib" step="0.01" min="0" max="100">
-    <button onclick="determineRank()">Submit</button>
+    <div class="container">
+        <h1>CS2 Premier Rating -> CS:GO Rank</h1>
+        <label for="distribInput">Enter CS2 %Rank:</label>
+        <input type="number" id="distribInput" placeholder="Enter percentage" min="0" max="100">
+        <button onclick="findRank()">Find Rank</button>
 
-    <p id="result"></p>
+        <div class="result" id="result"></div>
+    </div>
 
     <script>
-        function determineRank() {
-            let distrib = parseFloat(document.getElementById("distrib").value);
-            let resultText = '';
+        function findRank() {
+            // Get the user input value
+            let distrib = parseFloat(document.getElementById('distribInput').value);
 
-            if (distrib <= 0.75) {
-                resultText = 'GE - Global Elite';
-            } else if (distrib <= 3.39) {
-                resultText = 'SMFC - Supreme Master First Class';
-            } else if (distrib <= 6.59) {
-                resultText = 'LEM - Legendary Eagle Master';
-            } else if (distrib <= 9.84) {
-                resultText = 'LE - Legendary Eagle';
-            } else if (distrib <= 13.99) {
-                resultText = 'DMG - Distinguished Master Guardian';
-            } else if (distrib <= 19.23) {
-                resultText = 'MGE - Master Guardian Elite';
-            } else if (distrib <= 25.84) {
-                resultText = 'MG2 - Master Guardian II';
-            } else if (distrib <= 33.39) {
-                resultText = 'MG1 - Master Guardian I';
-            } else if (distrib <= 41.47) {
-                resultText = 'GNM - Gold Nova Master';
-            } else if (distrib <= 50.52) {
-                resultText = 'GN3 - Gold Nova III';
-            } else if (distrib <= 59.31) {
-                resultText = 'GN2 - Gold Nova II';
-            } else if (distrib <= 68.07) {
-                resultText = 'GN1 - Gold Nova I';
-            } else if (distrib <= 75.85) {
-                resultText = 'SEM - Silver Elite Master';
-            } else if (distrib <= 82.29) {
-                resultText = 'SE - Silver Elite';
-            } else if (distrib <= 87.50) {
-                resultText = 'S4 - Silver IV';
-            } else if (distrib <= 91.87) {
-                resultText = 'S3 - Silver III';
-            } else if (distrib <= 96.10) {
-                resultText = 'S2 - Silver II';
-            } else if (distrib <= 100) {
-                resultText = 'S1 - Silver I';
+            if (isNaN(distrib) || distrib < 0 || distrib > 100) {
+                document.getElementById('result').textContent = 'Please enter a valid percentage between 0 and 100.';
+                return;
             }
 
-            // Display the result
-            document.getElementById("result").innerText = resultText;
+            // Rank distribution percentages
+            let csgodistrib = [0.75, 2.64, 3.2, 3.25, 4.15, 5.24, 6.61, 7.55, 8.08, 9.05, 8.79, 8.76, 7.78, 6.44, 5.21, 4.37, 4.23, 3.9];
+
+            // CS:GO Ranks
+            let csgoranks = [
+                'GE - Global Elite', 'SMFC - Supreme Master First Class', 'LEM - Legendary Eagle Master', 
+                'LE - Legendary Eagle', 'DMG - Distinguished Master Guardian', 'MGE - Master Guardian Elite', 
+                'MG2 - Master Guardian II', 'MG1 - Master Guardian I', 'GNM - Gold Nova Master', 
+                'GN3 - Gold Nova III', 'GN2 - Gold Nova II', 'GN1 - Gold Nova I', 'SEM - Silver Elite Master', 
+                'SE - Silver Elite', 'S4 - Silver IV', 'S3 - Silver III', 'S2 - Silver II', 'S1 - Silver I'
+            ];
+
+            // Variable to store total distribution
+            let totaldistrib = 0;
+
+            // Loop through the distributions and find the rank
+            for (let i = 0; i < csgodistrib.length; i++) {
+                totaldistrib += csgodistrib[i];
+                if (distrib <= totaldistrib) {
+                    document.getElementById('result').textContent = `${distrib}% corresponds to: ${csgoranks[i]}`;
+                    return;
+                }
+            }
+
+            // If no rank is found
+            document.getElementById('result').textContent = 'Invalid percentage, please try again.';
         }
     </script>
 
